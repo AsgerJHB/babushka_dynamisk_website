@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bistro Babushka</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        font-family: ui-sans-serif, system-ui, -apple-system, system-ui,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+          "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+          "Noto Color Emoji";
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      header {
+        overflow: hidden;
+        background-color: #e8549b;
+        padding: 20px 10px;
+      }
+
+      header a {
+        float: left;
+        color: black;
+        text-align: center;
+        padding: 12px;
+        text-decoration: none;
+        font-size: 18px;
+        line-height: 25px;
+      }
+
+      header a.logo {
+        font-size: 40px;
+        font-weight: bold;
+      }
+
+      header a:hover {
+        background-color: #a83d71;
+        color: white;
+      }
+
+      header a.active {
+        background-color: #a83d71;
+        color: white;
+      }
+
+      .header-right {
+        float: right;
+      }
+
+      @media screen and (max-width: 500px) {
+        header a {
+          float: none;
+          display: block;
+          text-align: left;
+        }
+
+        header-right {
+          float: none;
+        }
+      }
+
+      .button-container {
+        background-color: #9ce69c;
+      }
+
+      button {
+        margin: 1.2em 0 1.2em 1.2em;
+        text-transform: capitalize;
+        background-color: #3dd1e7;
+        border: 0 solid #e5e7eb;
+        box-sizing: border-box;
+        color: #000000;
+        display: flex;
+        font-family: ui-sans-serif, system-ui, -apple-system, system-ui,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+          "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+          "Noto Color Emoji";
+        font-size: 1rem;
+        font-weight: 700;
+        justify-content: center;
+        line-height: 1.75rem;
+        padding: 0.75rem 1.65rem;
+        position: relative;
+        text-align: center;
+        text-decoration: none #000000 solid;
+        text-decoration-thickness: auto;
+        width: 100%;
+        max-width: 150px;
+        position: relative;
+        cursor: pointer;
+        transform: rotate(-2deg);
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+      button:focus {
+        outline: 0;
+      }
+      button:after {
+        content: "";
+        position: absolute;
+        border: 1px solid #000000;
+        bottom: 4px;
+        left: 4px;
+        width: calc(100% - 1px);
+        height: calc(100% - 1px);
+      }
+      button:hover:after {
+        bottom: 2px;
+        left: 2px;
+      }
+
+      nav {
+        max-width: 800px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 1rem;
+      }
+
+      body {
+        background-color: #e5c685;
+      }
+      section {
+        max-width: 1000px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      article {
+        background-color: #f5eed5;
+        padding: 10px;
+        margin: 1em;
+      }
+      h2 {
+        font-family: ui-sans-serif;
+      }
+      .pris {
+        text-align: center;
+        background-color: white;
+        padding: 0.5rem;
+      }
+
+      img {
+        max-width: 100%;
+      }
+      .art img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+      }
+      #modal {
+        display: none;
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        background-color: #00000055;
+      }
+
+      #modal article {
+        max-width: 600px;
+        margin: auto;
+        background-color: #f5eed5;
+        margin-top: 100px;
+        padding: 20px;
+      }
+
+      #modal .pris {
+        display: none;
+      }
+      #modal p {
+        font-weight: 600;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <a href="#default" class="logo">Bistro Babushka</a>
+      <div class="header-right">
+        <a href="#contact">Hjem</a>
+        <a class="active" href="#menu">Menu</a>
+        <a href="#contact">Kontakt</a>
+        <a href="#about">Om</a>
+      </div>
+    </header>
+    <div class="button-container">
+      <nav><button class="button">alle</button></nav>
+    </div>
+
+    <aside id="modal">
+      <article>
+        <img src="" alt="" />
+        <h2></h2>
+        <p class="kort"></p>
+        <p class="pris"></p>
+      </article>
+    </aside>
+
+    <section></section>
+
+    <template>
+      <article class="art">
+        <h2></h2>
+        <img src="" alt="" />
+        <p class="pris"></p>
+        <p class="lang"></p>
+        <p></p>
+      </article>
+    </template>
+    <script>
+      const container = document.querySelector("section");
+      const modal = document.querySelector("#modal");
+      const temp = document.querySelector("template");
+      const nav = document.querySelector("nav");
+      const url = "https://babushka-dd8a.restdb.io/rest/menu";
+      const key = "600ec2fb1346a1524ff12de4";
+      let retter = [];
+      let filter = "alle";
+
+      const options = {
+        headers: {
+          "x-apikey": key,
+        },
+      };
+
+      async function hentdata() {
+        const respons = await fetch(url, options);
+        const json = await respons.json();
+        retter = json;
+        bygFilterMenu();
+        vis();
+      }
+
+      function bygFilterMenu() {
+        document.querySelector("nav button").addEventListener("click", filtrer);
+        let mulige = [];
+        retter.forEach((ret) => {
+          if (!mulige.includes(ret.kategori)) {
+            mulige.push(ret.kategori);
+            const nyKnap = document.createElement("button");
+            nyKnap.textContent = ret.kategori;
+            nyKnap.addEventListener("click", filtrer);
+            nav.appendChild(nyKnap);
+          }
+        });
+      }
+
+      function filtrer() {
+        console.log(this.textContent);
+        filter = this.textContent;
+        container.textContent = "";
+        vis();
+      }
+
+      function vis() {
+        retter.forEach((ret) => {
+          if (ret.kategori == filter || filter == "alle") {
+            const klon = temp.cloneNode(true).content;
+            klon.querySelector("h2").textContent = ret.navn;
+            klon.querySelector("img").src =
+              "medium/" + ret.billednavn + "-md.jpg";
+            klon.querySelector("img").alt = "billednavn";
+            klon.querySelector("p").textContent = "Pris: " + ret.pris + ",-";
+            klon
+              .querySelector("article")
+              .addEventListener("click", () => visDetaljer(ret));
+            container.appendChild(klon);
+          }
+        });
+      }
+
+      function visDetaljer(ret) {
+        console.log(ret);
+        modal.querySelector("h2").textContent = ret.navn;
+        modal.querySelector("img").src = "medium/" + ret.billednavn + "-md.jpg";
+        modal.querySelector("p").textContent = ret.langbeskrivelse;
+        modal.style.display = "block";
+      }
+
+      modal.addEventListener("click", () => (modal.style.display = "none"));
+      hentdata();
+    </script>
+  </body>
+</html>
